@@ -3,6 +3,8 @@ package com.yu.security1.controller;
 import com.yu.security1.model.User;
 import com.yu.security1.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -56,5 +58,18 @@ public class IndexController {
         user.setPassword(encPw);
         userRepository.save(user);
         return "redirect:/loginForm";
+    }
+
+    // securityConfig에서 글로벌로 설정하지 않아도 이렇게 개별적으로 걸 수 있음
+    @Secured("ROLE_ADMIN") // SecureityConfig에서 EnabledGlobalSecurtiy.. 어노테이션 걸어서 secured 어노테이션 활성화 됨
+    @GetMapping("/info")
+    public @ResponseBody String info(){
+        return "개인정보";
+    }
+
+    @PreAuthorize("hasRole('ROLE_MANAGER') or hasRole('ROLE_ADMIN')") // 실행되기 직전에 검사함. 위와 같이 EnabledGlobal... 어노테이션으로 설정
+    @GetMapping("/info2")
+    public @ResponseBody String info2(){
+        return "개인정보2";
     }
 }
