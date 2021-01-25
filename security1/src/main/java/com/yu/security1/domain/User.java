@@ -23,6 +23,8 @@ public class User {
     private String password;
     private String email;
     private String role; // ROLE_USER, ROLE_ADMIN, ROLE_MANAGER
+    private String provider; // Google
+    private String providerId; // Google Id
     @CreationTimestamp
     private Timestamp createddate;
 }
