@@ -1,6 +1,9 @@
 package com.yu.security1.config.oauth;
 
 import com.yu.security1.config.auth.CustomUserDetails;
+import com.yu.security1.config.oauth.provider.FacebookUserInfo;
+import com.yu.security1.config.oauth.provider.GoogleUserInfo;
+import com.yu.security1.config.oauth.provider.OAuth2UserInfo;
 import com.yu.security1.domain.User;
 import com.yu.security1.repository.UserRepository;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -31,11 +34,18 @@ public class CustomOauth2UserService extends DefaultOAuth2UserService {
 
         // super.loadUser(userRequest) 안의 정보를 토대로 회원가입 강제 진행
         OAuth2User oauth2User = super.loadUser(userRequest);
-        String provider = userRequest.getClientRegistration().getClientId(); // Google
-        String providerId = (String) oauth2User.getAttributes().get("sub");
+        String provider = userRequest.getClientRegistration().getRegistrationId();
+
+        OAuth2UserInfo oAuth2UserInfo = null;
+        if(provider.equals("google")){
+            oAuth2UserInfo = new GoogleUserInfo(oauth2User.getAttributes());
+        } else if(provider.equals("facebook")){
+            oAuth2UserInfo = new FacebookUserInfo(oauth2User.getAttributes());
+        }
+        String providerId = oAuth2UserInfo.getProviderId();
+        String email = oAuth2UserInfo.getEmail();
         String username = provider + "_" + providerId; // google_1235985792385723
         String password = passwordEncoder.encode(DUMMY_PASSWORD);
-        String email = (String) oauth2User.getAttributes().get("email");
         String role = "ROLE_USER";
 
         // 이미 회원가입 되어있는지 확인
