@@ -1,11 +1,16 @@
 package com.yu.security1.controller;
 
+import com.yu.security1.config.auth.CustomUserDetails;
 import com.yu.security1.domain.User;
 import com.yu.security1.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,10 +18,29 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 @RequiredArgsConstructor
-public class IndexController {
+public class  IndexController {
 
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
+
+    @GetMapping("/test/login")
+    public @ResponseBody String testLogin(Authentication authentication, @AuthenticationPrincipal CustomUserDetails userDetails){
+        // DI를 통해 Authentiation 안에 UserDetails 정보가 있고 그 안에 User 정보가 있음
+        // 혹은 어노테이션을 통해 유저 정보 가져올 수 있다.
+        CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal(); // Object이므로 다운캐스팅
+        System.out.println("오센티 = " + customUserDetails.getUser());
+        System.out.println("유저테일 = " + userDetails.getUser());
+        return "세션 정보 확인";
+    }
+
+    @GetMapping("/test/oauth/login")
+    public @ResponseBody String testOauthLogin(Authentication authentication, @AuthenticationPrincipal OAuth2User userDetails){
+        // Oauth에서는 CustomUserDetails로 캐스팅이 안 됨 -> CustomUserDetails가 OAuth2User로 implement하게 하자.
+        OAuth2User customUserDetails = (OAuth2User) authentication.getPrincipal();
+        System.out.println("오어스 오센티 = " + customUserDetails.getAttributes());
+        System.out.println("오어스 유저테일 = " + userDetails.getAttributes());
+        return "오어스 세션 정보 확인";
+    }
 
     @GetMapping({"", "/"})
     public String index() {

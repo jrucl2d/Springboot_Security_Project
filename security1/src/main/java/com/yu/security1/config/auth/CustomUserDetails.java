@@ -5,14 +5,18 @@ package com.yu.security1.config.auth;
 // Authentication 안에 User 정보가 있어야 하고 User 오브젝트 타입은 UserDetails 타입 객체
 
 import com.yu.security1.domain.User;
+import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Map;
 
 // Security Session -> Authentication -> UserDetails
-public class CustomUserDetails implements UserDetails {
+@Getter
+public class CustomUserDetails implements UserDetails, OAuth2User {
 
     private User user;
 
@@ -55,5 +59,14 @@ public class CustomUserDetails implements UserDetails {
     @Override // 휴면계정 설정 등에 사용
     public boolean isEnabled() {
         return true;
+    }
+
+    @Override
+    public Map<String, Object> getAttributes() {
+        return null;
+    }
+    @Override
+    public String getName() {
+        return null;
     }
 }
