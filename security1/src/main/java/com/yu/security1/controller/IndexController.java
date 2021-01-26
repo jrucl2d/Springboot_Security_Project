@@ -48,8 +48,10 @@ public class  IndexController {
         return "index";
     }
 
+    // 일반 로그인 해도, OAuth 로그인 해도 유저 정보 가져올 수 있다.
     @GetMapping("/user")
-    public @ResponseBody String user() {
+    public @ResponseBody String user(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        System.out.println("유저 정보 : " + customUserDetails.getUser());
         return "user";
     }
 

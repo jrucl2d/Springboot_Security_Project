@@ -16,12 +16,20 @@ import java.util.Map;
 
 // Security Session -> Authentication -> UserDetails
 @Getter
-public class CustomUserDetails implements UserDetails, OAuth2User {
+public class CustomUserDetails implements UserDetails, OAuth2User { // OAuth2User도 여기에 넣어버림
 
     private User user;
+    private Map<String, Object> attributes;
 
+    // 일반 로그인
     public CustomUserDetails(User user){
         this.user = user;
+    }
+    
+    // OAuth 로그인
+    public CustomUserDetails(User user, Map<String, Object> attributes){
+        this.user = user;
+        this.attributes = attributes;
     }
 
     @Override
@@ -63,10 +71,10 @@ public class CustomUserDetails implements UserDetails, OAuth2User {
 
     @Override
     public Map<String, Object> getAttributes() {
-        return null;
+        return attributes;
     }
     @Override
     public String getName() {
-        return null;
+        return null; // 안 중요함
     }
 }
