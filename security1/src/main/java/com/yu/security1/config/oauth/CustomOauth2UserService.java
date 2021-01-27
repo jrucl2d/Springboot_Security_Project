@@ -3,6 +3,7 @@ package com.yu.security1.config.oauth;
 import com.yu.security1.config.auth.CustomUserDetails;
 import com.yu.security1.config.oauth.provider.FacebookUserInfo;
 import com.yu.security1.config.oauth.provider.GoogleUserInfo;
+import com.yu.security1.config.oauth.provider.NaverUserInfo;
 import com.yu.security1.config.oauth.provider.OAuth2UserInfo;
 import com.yu.security1.domain.User;
 import com.yu.security1.repository.UserRepository;
@@ -12,6 +13,8 @@ import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
+
+import java.util.Map;
 
 @Service
 // 함수 종료시 @AuthenticationPrincipal 어노테이션이 활성화됨
@@ -41,6 +44,8 @@ public class CustomOauth2UserService extends DefaultOAuth2UserService {
             oAuth2UserInfo = new GoogleUserInfo(oauth2User.getAttributes());
         } else if(provider.equals("facebook")){
             oAuth2UserInfo = new FacebookUserInfo(oauth2User.getAttributes());
+        }else if(provider.equals("naver")){
+            oAuth2UserInfo = new NaverUserInfo((Map)oauth2User.getAttributes().get("response"));
         }
         String providerId = oAuth2UserInfo.getProviderId();
         String email = oAuth2UserInfo.getEmail();
