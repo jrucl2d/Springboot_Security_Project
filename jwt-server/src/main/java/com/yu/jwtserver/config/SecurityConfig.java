@@ -1,6 +1,8 @@
 package com.yu.jwtserver.config;
 
 import com.yu.jwtserver.filter.JwtAuthenticationFilter;
+import com.yu.jwtserver.filter.JwtAuthorizationFilter;
+import com.yu.jwtserver.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,6 +19,7 @@ import org.springframework.web.filter.CorsFilter;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final CorsFilter corsFilter;
+    private final UserRepository userRepository;
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder(){
@@ -30,6 +33,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .addFilter(corsFilter) // 인증 X -> @CrossOrigin, 인증 O -> security filter 등록 필요
                 .addFilter(new JwtAuthenticationFilter(authenticationManager())) // authenticationManager가 필요하다.
+                .addFilter(new JwtAuthorizationFilter(authenticationManager(), userRepository))
                 .formLogin().disable() // form 태그를 사용한 로그인 안 함
                 .httpBasic().disable() // 헤더의 Authorization에 id, pw를 담아서 전송하던 방식이 바로 http basic 방식, 토큰으로 만들어서 전송하는 방식이 bearer 방식
                 .authorizeRequests()
