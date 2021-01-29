@@ -2,6 +2,8 @@ package com.yu.jwtserver.auth;
 
 import com.yu.jwtserver.domain.User;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -9,6 +11,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 @AllArgsConstructor
+@Getter
+@Setter
 public class CustomUserDetails implements UserDetails {
 
     private User user;
